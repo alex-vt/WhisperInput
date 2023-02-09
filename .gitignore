@@ -1,0 +1,14 @@
+*.iml
+.gradle/
+.idea/
+build/
+*.jks
+*.keystore
+signing.properties
+local.properties
+.directory
+r8-config.txt
+usage.txt
+*.apk
+testdata/
+materials/
