@@ -1,0 +1,131 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+dependencies {
+    implementation project(':speechutils:app')
+    // TODO: used only in ChunkedWebRecSessionResult, use Android's JSON library instead
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
+    implementation 'com.koushikdutta.async:androidasync:3.1.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.20'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    // implementation 'androidx.activity:activity:1.4.0'
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+    implementation 'com.google.android.material:material:1.7.0'
+    // Added only to resolve https://issuetracker.google.com/issues/242384116
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+}
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+
+    // API level 3: some default button was not found, but we didn't explore it further.
+    // API level 7: MediaRecorder.AudioSource.VOICE_RECOGNITION
+    // API level 8: android.speech.SpeechRecognizer and android.speech.RecognitionService
+    // API level 14: @android:style/Theme.DeviceDefault
+    // API level 21: Jetpack Compose
+    namespace 'com.alexvt.whisperinput'
+    defaultConfig {
+        applicationId 'com.alexvt.whisperinput'
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 101
+        versionName '0.1.1'
+        vectorDrawables.useSupportLibrary = true
+        resConfigs 'en'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE.txt', 'META-INF/NOTICE.txt']
+        }
+    }
+
+    Properties signingProperties = new Properties()
+    File signingPropertiesFile = file("../signing.properties")
+    boolean signingPropertiesExist = signingPropertiesFile.exists()
+    if (signingPropertiesExist) signingProperties.load(new FileInputStream(signingPropertiesFile))
+
+    signingConfigs {
+        release {
+            storeFile signingPropertiesExist ? file(signingProperties["signingStoreLocation"]) : null
+            storePassword signingProperties["signingStorePassword"]
+            keyAlias signingProperties["signingKeyAlias"]
+            keyPassword signingProperties["signingKeyPassword"]
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable false
+            signingConfig signingConfigs.release
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
+            proguardFile 'proguard.cfg'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    ndkVersion "25.1.8937393"
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/whisper/Android.mk'
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+    lint {
+        // TODO: in the future check for Kotlin-Java interop
+        //check 'Interoperability'
+        disable 'ResourceType', 'AppLinkUrlError', 'EllipsizeMaxLines', 'RtlSymmetry', 'Autofill', 'QueryAllPackagesPermission'
+    }
+}
+
+task deploy {
+    doLast {
+        description 'Copy the APK and the ProGuard mapping file to the deploy directory'
+
+        def deploy_dir = System.getenv('APK_DEPLOY_DIR')
+
+        def version = android.defaultConfig.versionName
+
+        def name = 'K6nele'
+
+        def outputs = 'build/outputs/'
+        def apk1 = outputs + 'apk/release/app-release.apk'
+        def apk2 = "${deploy_dir}${name}-${version}.apk"
+        def mapping1 = outputs + 'mapping/release/mapping.txt'
+        def mapping2 = "${deploy_dir}${name}-mapping-${version}.txt"
+
+        exec {
+            commandLine 'cp', '--verbose', apk1, apk2
+        }
+
+        exec {
+            commandLine 'cp', '--verbose', mapping1, mapping2
+        }
+
+        exec {
+            commandLine 'ls', '-l', deploy_dir
+        }
+
+        println "adb uninstall ${android.defaultConfig.applicationId}"
+        println "adb install ${apk2}"
+    }
+}

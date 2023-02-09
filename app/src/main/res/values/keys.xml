@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prefCurrentSortOrder" translatable="false">CurrentSortOrder</string>
+    <string name="mapAppToHeight" translatable="false">mapAppToHeight</string>
+    <string name="mapClipboardTabName" translatable="false">mapClipboardTabName</string>
+    <string name="keyHttpServer" translatable="false">keyHttpServer</string>
+    <string name="keyWsServer" translatable="false">keyWsServer</string>
+    <string name="keyRecordingRate" translatable="false">keyRecordingRate</string>
+    <string name="keyAutoStart" translatable="false">keyAutoStart</string>
+    <string name="keyAutoStopAfterPause" translatable="false">keyAutoStopAfterPause</string>
+    <string name="keyAutoStopAfterTime" translatable="false">keyAutoStopAfterTime</string>
+    <string name="keyRespectLocale" translatable="false">keyRespectLocale</string>
+    <string name="keyAudioCues" translatable="false">keyAudioCues</string>
+    <string name="keyHelpText" translatable="false">keyHelpText</string>
+    <string name="keyReturnErrors" translatable="false">keyReturnErrors</string>
+    <string name="keyCombo" translatable="false">keyCombo</string>
+    <string name="keyCurrentAppCombo" translatable="false">keyCurrentAppCombo</string>
+    <string name="keyImeAutoStart" translatable="false">keyImeAutoStart</string>
+    <string name="keyImeAudioCues" translatable="false">keyImeAudioCues</string>
+    <string name="keyImeShowPartialResults" translatable="false">keyImeShowPartialResults</string>
+    <string name="keyImeHelpText" translatable="false">keyImeHelpText</string>
+    <string name="keyImeCombo" translatable="false">keyImeCombo</string>
+    <string name="keyImeCurrentAppCombo" translatable="false">keyImeCurrentAppCombo</string>
+    <string name="keyImeAudioFormat" translatable="false">keyImeAudioFormat</string>
+    <string name="keyAudioFormat" translatable="false">keyAudioFormat</string>
+    <string name="keyMaxHypotheses" translatable="false">keyMaxHypotheses</string>
+    <string name="keyRewritesMap" translatable="false">keyRewritesMap</string>
+    <string name="keyGetPutPrefSkipUi" translatable="false">keyGetPutPrefSkipUi</string>
+    <string name="keySystemVoiceInputSettings" translatable="false">keySystemVoiceInputSettings</string>
+
+    <string name="keyWsAutoStopAfterPause" translatable="false">keyWsAutoStopAfterPause</string>
+    <string name="keyOfflineAutoStopAfterPause" translatable="false">keyOfflineAutoStopAfterPause</string>
+
+    // These keys are needed to locate (to show/hide) the "enable ime" link in the settings
+    <string name="keyEnableIme" translatable="false">keyEnableIme</string>
+    <string name="keyCategoryIme" translatable="false">keyCategoryIme</string>
+    <string name="keyCategoryDependencies" translatable="false">keyCategoryDependencies</string>
+
+    <!-- TODO: convert to integer-array -->
+    <string-array name="valuesAutoStopAfterTime" translatable="false">
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+
+    <!-- SpeechInputView (TypedArray keysAsTypedArray) depends on the order and count of these items. -->
+    <array name="keysActivity" translatable="false">
+        <item>@string/keyCombo</item>
+        <item>@string/keyCurrentAppCombo</item>
+        <item>@array/defaultCombosExcluded</item>
+        <item>@string/keyAutoStart</item>
+        <item>@bool/defaultAutoStart</item>
+        <item>@string/keyAudioCues</item>
+        <item>@bool/defaultAudioCues</item>
+        <item>@string/keyHelpText</item>
+        <item>@bool/defaultHelpText</item>
+    </array>
+
+    <array name="keysIme" translatable="false">
+        <item>@string/keyImeCombo</item>
+        <item>@string/keyImeCurrentAppCombo</item>
+        <item>@array/defaultImeCombosExcluded</item>
+        <item>@string/keyImeAutoStart</item>
+        <item>@bool/defaultImeAutoStart</item>
+        <item>@string/keyImeAudioCues</item>
+        <item>@bool/defaultImeAudioCues</item>
+        <item>@string/keyImeHelpText</item>
+        <item>@bool/defaultImeHelpText</item>
+    </array>
+</resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="center">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <com.alexvt.whisperinput.speak.view.SpeechInputView
+        android:id="@+id/vSpeechInputView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/layoutMargin4dp"
+        android:orientation="vertical">
+
+        <!-- TODO: experiment with buttonless speech input view -->
+        <ee.ioc.phon.android.speechutils.view.MicButton
+            android:id="@+id/bImeStartStop"
+            android:layout_width="@dimen/layoutHeightButtonMicrophone"
+            android:layout_height="@dimen/layoutHeightButtonMicrophone"
+            android:layout_centerVertical="true"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/layoutMargin4dp"
+            android:background="@drawable/button_mic"
+            android:contentDescription="@string/cdMicrophone"
+            android:elevation="6dp"
+            app:srcCompat="@drawable/ic_voice_search_api_material" />
+
+        <include
+            layout="@layout/button_combo_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/layoutMargin4dp"
+            android:text="@string/testComboLabels"
+            android:textAppearance="?android:attr/textAppearanceButton" />
+
+    </com.alexvt.whisperinput.speak.view.SpeechInputView>
+
+    <include
+        layout="@layout/list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/vSpeechInputView"
+        android:layout_alignParentTop="true"
+        android:fontFamily="monospace"
+        android:stackFromBottom="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:textColorPrimary"
+        android:transcriptMode="alwaysScroll" />
+
+</RelativeLayout>

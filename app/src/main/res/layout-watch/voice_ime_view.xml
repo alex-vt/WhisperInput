@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.alexvt.whisperinput.speak.view.SpeechInputView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/rectangle_gradient"
+    android:clickable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:theme="@style/Theme.K6nele">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/bImeKeyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/button_go"
+            android:contentDescription="@string/cdChangeInputMethod"
+            android:padding="@dimen/layoutMargin1"
+            android:paddingEnd="@dimen/layoutMargin2"
+            android:paddingBottom="@dimen/layoutMargin2"
+            app:srcCompat="@drawable/ic_ime" />
+
+        <ImageButton
+            android:id="@+id/bImeDragHandle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/cdChangeUiMode"
+            android:paddingStart="@dimen/layoutMargin2"
+            android:paddingLeft="@dimen/layoutMargin2"
+            android:paddingTop="@dimen/layoutMargin4dp"
+            android:paddingEnd="@dimen/layoutMargin2"
+            android:paddingRight="@dimen/layoutMargin2"
+            android:paddingBottom="@dimen/layoutMargin1"
+            app:srcCompat="@drawable/ic_baseline_drag_handle_24" />
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bImeDragHandle"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/layoutMargin4dp"
+            android:layout_toStartOf="@+id/bImeAction"
+            android:layout_toEndOf="@+id/bImeKeyboard"
+            android:ellipsize="start"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="@dimen/textSize2"
+            tools:text="@string/summaryEnableIme" />
+
+        <ImageButton
+            android:id="@+id/bImeAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_go"
+            android:contentDescription="@string/cdGo"
+            android:padding="@dimen/layoutMargin1"
+            android:paddingStart="@dimen/layoutMargin2"
+            android:paddingBottom="@dimen/layoutMargin2"
+            app:srcCompat="@drawable/ic_search" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlMiddle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvMessage"
+        android:animateLayoutChanges="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="1dp">
+
+        <include layout="@layout/editor_rewrites" />
+
+        <LinearLayout
+            android:id="@+id/centralButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/layoutMargin4dp"
+                android:gravity="center"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/textSize3"
+                tools:text="@string/buttonImeSpeak" />
+
+            <ee.ioc.phon.android.speechutils.view.MicButton
+                android:id="@+id/bImeStartStop"
+                android:layout_width="@dimen/layoutHeightButtonMicrophoneIme"
+                android:layout_height="@dimen/layoutHeightButtonMicrophoneIme"
+                android:layout_gravity="center"
+                android:background="@drawable/button_mic"
+                android:contentDescription="@string/cdMicrophone"
+                android:elevation="6dp"
+                app:srcCompat="@drawable/ic_voice_search_api_material" />
+
+            <RelativeLayout
+                android:id="@+id/rlKeyButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom">
+
+                <ImageButton
+                    android:id="@+id/bImeDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/layoutMargin1"
+                    android:background="@drawable/button_go"
+                    android:contentDescription="@string/cdImeDelete"
+                    android:padding="@dimen/layoutMargin1"
+                    android:paddingTop="@dimen/layoutMargin2"
+                    android:paddingEnd="@dimen/layoutMargin2"
+                    android:paddingBottom="@dimen/layoutMargin2"
+                    app:srcCompat="@drawable/ic_backspace" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/rlBottomBar"
+        layout="@layout/editor_bottom_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center" />
+</com.alexvt.whisperinput.speak.view.SpeechInputView>

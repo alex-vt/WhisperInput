@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="fill"
+    android:padding="@dimen/layoutMargin1">
+
+    <TextView
+        android:id="@+id/itemServerId"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:maxLines="1"
+        android:textSize="@dimen/textSize2"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/itemServerUrl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemServerId"
+        android:text="@string/defaultHttpServer"
+        android:textSize="@dimen/textSize2" />
+
+    <!-- TODO: This could be used to indicate the default server -->
+
+    <TextView
+        android:id="@+id/itemServerStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/middot"
+        android:textColor="@color/green1"
+        android:textSize="@dimen/textSize3"
+        android:visibility="gone" />
+
+</RelativeLayout>

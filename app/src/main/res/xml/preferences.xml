@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- This preference is a shortcut to the Android IME settings to allow the
+    user to quickly enable the Kõnele IME. If already enabled, this preference is not shown.
+    Note that Android Things does not have the INPUT_METHOD_SETTINGS activity, so clicking
+    on the preference causes the app to crash on Android Things. One must enable Kõnele using
+    adb shell ime enable com.alexvt.whisperinput/.speak.service.SpeechInputMethodService.
+    -->
+    <Preference
+        android:key="@string/keyEnableIme"
+        android:summary="@string/summaryEnableIme"
+        android:title="@string/titleEnableIme"
+        app:iconSpaceReserved="false">
+        <intent android:action="android.settings.INPUT_METHOD_SETTINGS" />
+    </Preference>
+    // Speech keyboard settings
+    // These settings are specific to the UI
+    // Settings which cannot be configured using standard extras (audio cues, autostop) are in
+    // the service menus because the UI cannot influence them.
+    <PreferenceCategory
+        android:key="@string/keyCategoryIme"
+        android:title="@string/titleCategoryIme"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="@string/keyImeCombo"
+            android:summary="@string/summaryImeCombo"
+            android:title="@string/titleCombo"
+            app:iconSpaceReserved="false">
+            <intent
+                android:targetClass="com.alexvt.whisperinput.speak.activity.ComboSelectorActivity"
+                android:targetPackage="com.alexvt.whisperinput">
+                <extra
+                    android:name="key"
+                    android:value="@string/keyImeCombo" />
+            </intent>
+        </Preference>
+        <!--
+        <CheckBoxPreference
+            android:defaultValue="@bool/defaultImeAutoStart"
+            android:key="@string/keyImeAutoStart"
+            android:summary="@string/summaryAutoStart"
+            android:title="@string/titleAutoStart"
+            app:iconSpaceReserved="false" />
+        -->
+        <!-- todo implement whisper partial results: CheckBoxPreference
+            android:defaultValue="@bool/defaultImeShowPartialResults"
+            android:key="@string/keyImeShowPartialResults"
+            android:summary="@string/summaryImeShowPartialResults"
+            android:title="@string/titleImeShowPartialResults"
+            app:iconSpaceReserved="false" /-->
+        <!--
+        <CheckBoxPreference
+            android:defaultValue="@bool/defaultImeHelpText"
+            android:key="@string/keyImeHelpText"
+            android:summary="@string/summaryImeHelpText"
+            android:title="@string/titleImeHelpText"
+            app:iconSpaceReserved="false" />
+        -->
+    </PreferenceCategory>
+
+    // Voice search activity (TODO: unify terminology: dialog, panel, UI, speech action)
+    // These settings are specific to the UI
+    <PreferenceCategory
+        android:title="@string/titleCategoryUi"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="@string/keyCombo"
+            android:summary="@string/summaryImeCombo"
+            android:title="@string/titleCombo"
+            app:iconSpaceReserved="false">
+            <intent
+                android:targetClass="com.alexvt.whisperinput.speak.activity.ComboSelectorActivity"
+                android:targetPackage="com.alexvt.whisperinput">
+                <!-- TODO: is there a better way to pass the key to the fragment? -->
+                <extra
+                    android:name="key"
+                    android:value="@string/keyCombo" />
+            </intent>
+        </Preference>
+        <CheckBoxPreference
+            android:defaultValue="@bool/defaultAutoStart"
+            android:key="@string/keyAutoStart"
+            android:summary="@string/summaryAutoStart"
+            android:title="@string/titleAutoStart"
+            app:iconSpaceReserved="false" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/defaultHelpText"
+            android:key="@string/keyHelpText"
+            android:summary="@string/summaryHelpText"
+            android:title="@string/titleHelpText"
+            app:iconSpaceReserved="false" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/defaultReturnErrors"
+            android:key="@string/keyReturnErrors"
+            android:summary="@string/summaryReturnErrors"
+            android:title="@string/titleReturnErrors"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/keyCategoryDependencies"
+        android:title="@string/titleCategoryDependencies"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:summary="@string/summaryAppList"
+            android:title="@string/labelActivityAppList"
+            app:iconSpaceReserved="false">
+            <intent
+                android:targetClass="com.alexvt.whisperinput.speak.activity.AppListActivity"
+                android:targetPackage="com.alexvt.whisperinput" />
+        </Preference>
+        <Preference
+            android:summary="@string/summaryServices"
+            android:title="@string/titleServices"
+            app:iconSpaceReserved="false">
+            <intent
+                android:targetClass="com.alexvt.whisperinput.speak.activity.RecServiceSelectorActivity"
+                android:targetPackage="com.alexvt.whisperinput" />
+        </Preference>
+
+        <!-- This intent requires API 21+, and can crash on older versions. -->
+        <!-- TODO: hide this on Wear, which does not offer this intent -->
+        <Preference
+            android:key="@string/keySystemVoiceInputSettings"
+            android:summary="@string/summarySystemVoiceInputSettings"
+            android:title="@string/titleSystemVoiceInputSettings"
+            app:iconSpaceReserved="false">
+            <intent android:action="android.settings.VOICE_INPUT_SETTINGS" />
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen>

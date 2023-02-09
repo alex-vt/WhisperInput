@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/layoutMargin1">
+
+    <ImageView
+        android:id="@+id/serviceIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="@dimen/layoutMargin4dp"
+        android:layout_marginBottom="@dimen/layoutMargin4dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/cdServiceIcon"
+        android:maxWidth="32dp"
+        android:maxHeight="32dp"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/ic_service" />
+
+    <TextView
+        android:id="@+id/service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/serviceIcon"
+        android:layout_toEndOf="@+id/serviceIcon"
+        android:padding="@dimen/layoutMargin4dp"
+        android:maxLines="2"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:textColorPrimary"
+        tools:text="@string/labelRecognitionServiceWs" />
+
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/serviceIcon"
+        android:padding="@dimen/layoutMargin4dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="?android:textColorSecondary"
+        tools:text="@string/summaryServiceWs" />
+
+</RelativeLayout>

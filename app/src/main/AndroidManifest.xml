@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="auto">
+
+    <!-- Permission RECORD_AUDIO.
+    Used to record the speech input to be transcribed.
+    This is an essential permission for Kõnele. Because it is also a "dangerous" permission,
+    then Kõnele requests it as soon as the user starts the audio recorder.
+    -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Permission READ_EXTERNAL_STORAGE is sometimes required when importing rewrite rules,
+    e.g. when opening rules via Firefox or Dropbox. (It is not needed via Chrome.)
+    This is a "dangerous" permission, i.e. it is not enabled by default. Kõnele currently does not
+    provide a UI to request it either, but listing it in the manifest makes it show up in the Apps settings,
+    i.e. the user can grant it, if needed.
+    In Android versions before v6.0 (~35% of the users as of 2017-06-18)
+    the permission is granted at install time, which is not nice, but this user base will
+    disappear over time.
+    -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- Permission SET_ALARM.
+    Used to set the alarm clock if the transcription resolves to an AlarmClock intent.
+    Non-dangerous permission, i.e. granted automatically at install time.
+    This is only used when a rewrite rule creates an AlarmClock intent, so most users would not
+    need it, but unfortunately there is no way to enable/disable it at runtime.
+    -->
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+
+    <!-- TODO: investigate if we need this permission (and enable it during runtime), to
+    mute the audio stream during recognition. -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <!-- TODO: try to avoid having to request this permission (and then enable QueryAllPackagesPermission)
+    Android v11. We query packages for several reasons:
+    1) finding speech recognizer providers (this query is declared below in the queries-section)
+    2) finding TTS service providers (this query is declared below in the queries-section)
+    3) listing apps (with icon and launch intent) that have previously launched Kõnele
+    4) launching intents (e.g. setting the alarm or opening maps) via rewrites
+    It is unclear if use-cases 3 and 4 could be instead declared via the queries-section.
+    -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <!-- Custom permission required by GetPutPreferenceActivity to be able to read/write the Kõnele settings. -->
+    <!--
+    <uses-permission android:name="com.alexvt.whisperinput.speak.permission.GET_PUT_SETTING" />
+    -->
+
+    <!-- Custom permission required by FetchUrlActivity to be able to fetch data from a given URL
+    and interpret and execute its corresponding activity. -->
+    <uses-permission android:name="com.alexvt.whisperinput.speak.permission.FETCH_URL" />
+
+    <!--
+    <permission
+        android:name="com.alexvt.whisperinput.speak.permission.GET_PUT_SETTING"
+        android:description="@string/descriptionPermissionGetPutSetting"
+        android:label="@string/labelPermissionGetPutSetting"
+        android:permissionGroup="android.permission-group.CHANGE_SETTINGS"
+        android:protectionLevel="dangerous" />
+    -->
+    <!--
+    TODO: setting the permissionGroup to a non-existent group did not work in Android v12.
+    android:permissionGroup="android.permission-group.RUN_ACTIVITY"
+    -->
+    <permission
+        android:name="com.alexvt.whisperinput.speak.permission.FETCH_URL"
+        android:description="@string/descriptionPermissionFetchUrl"
+        android:label="@string/labelPermissionFetchUrl"
+        android:protectionLevel="dangerous" />
+
+    <!-- Some Chromebooks don't support touch. Although not essential,
+     it's a good idea to explicitly include this declaration. -->
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+
+    <!-- <uses-feature android:name="android.hardware.type.watch" /> -->
+
+    <!-- TODO: review -->
+
+    <queries>
+        <intent>
+            <!-- Packages that provide speech recognition services -->
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <!-- Packages that provide TTS services -->
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:description="@string/descriptionApp"
+        android:fullBackupContent="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/labelApp"
+        android:localeConfig="@xml/locales_config"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.K6nele"
+        android:usesCleartextTraffic="true">
+
+        <!--
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+
+        <uses-library
+            android:name="com.google.android.wearable"
+            android:required="false" />
+        -->
+
+        <!--
+TODO: singleTask seems a more appropriate launchMode but returns the results to the caller
+only on Android v5, So we have to use standard on older versions. See also:
+http://stackoverflow.com/questions/8960072/onactivityresult-with-launchmode-singletask
+Also, failed to set the launchMode from the resource, INSTALL_PARSE_FAILED_UNEXPECTED_EXCEPTION
+-->
+
+        <!-- Voice search panel. -->
+
+        <!--
+			android:finishOnTaskLaunch="true"
+			android:allowTaskReparenting="false"
+			android:resizeableActivity="true"
+			android:supportsPictureInPicture="true"
+        -->
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.SpeechActionActivity"
+            android:clearTaskOnLaunch="true"
+            android:exported="true"
+            android:label="@string/labelActivityRecognizerIntent"
+            android:launchMode="standard"
+            android:theme="@style/Theme.K6nele.Dialog.NoActionBar">
+            <intent-filter>
+                <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.speech.action.WEB_SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- input/output: Nothing -->
+            <!-- Samsung Galaxy SII launches VOICE_COMMAND when HOME is double-clicked -->
+            <intent-filter>
+                <action android:name="android.intent.action.VOICE_COMMAND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!--
+            Action ASSIST (API 16)
+            Input: EXTRA_ASSIST_PACKAGE, EXTRA_ASSIST_CONTEXT. Output: nothing.
+
+            * "Search assistant" on CM10.2, which can be mapped to various buttons.
+            * Long press on the HOME button on Nexus 5X.
+            * Upper physical button on Huawei Watch 2.
+
+            The default ASSIST app is user-configurable on the phone but not on Wear,
+            i.e. on the phone the user can choose which app is started, e.g. when long-pressing
+            on the HOME button, and the filter priority plays no role. On Wear the choice
+            is based only on the priority.
+            We set it to lower than default to let the other guy win. This is probably
+            specific to Huawei Watch 2 with its weird setup,
+            where the upper button launches ASSIST (and this cannot be
+            changed) and the lower button can open any app (other than Google Assist).
+            -->
+            <intent-filter android:priority="-10">
+                <action android:name="android.intent.action.ASSIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- input/output: Nothing -->
+            <!-- API 3 -->
+            <!-- "Voice search" on CM10.2, which can be mapped to various buttons -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- input/output: Nothing -->
+            <intent-filter>
+                <action android:name="android.speech.action.VOICE_SEARCH_HANDS_FREE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- TODO: future work
+            <intent-filter>
+                <action android:name="android.provider.MediaStore.RECORD_SOUND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- TODO: do we still need it, now that we support all services -->
+            <meta-data
+                android:name="android.speech.DETAILS"
+                android:value="com.alexvt.whisperinput.speak.GetLanguageDetailsReceiver" />
+        </activity>
+
+        <!-- This receiver is exported, i.e. any app can ask which languages K6nele supports. -->
+        <receiver
+            android:name="com.alexvt.whisperinput.speak.GetLanguageDetailsReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.speech.action.GET_LANGUAGE_DETAILS" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Preferences are exported by default because they have intent filters.
+        But they should be not exported to avoid a security issue on older Androids (see lint check).
+        But on Android 12 they must be exported again...
+        -->
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.Preferences"
+            android:exported="true"
+            android:label="@string/labelActivityPreferences">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.alexvt.whisperinput.speak.PreferencesRecognitionServiceHttp"
+            android:exported="true"
+            android:label="@string/labelActivityPreferencesRecognitionServiceHttp"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.RecServiceSelectorActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.alexvt.whisperinput.speak.PreferencesRecognitionServiceWs"
+            android:exported="true"
+            android:label="@string/labelActivityPreferencesRecognitionServiceWs"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.RecServiceSelectorActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.alexvt.whisperinput.speak.PreferencesRecognitionServiceOffline"
+            android:exported="true"
+            android:label="@string/labelActivityPreferencesRecognitionServiceOffline"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.RecServiceSelectorActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.alexvt.whisperinput.speak.AboutActivity"
+            android:exported="false"
+            android:label="@string/labelActivityAbout"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.Preferences"
+            android:theme="@style/Theme.K6nele" />
+
+        <!-- This is the only activity that the recognizer can launch. -->
+        <!-- TODO: do not reparent -->
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.DetailsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.K6nele.Dialog" />
+        <!-- TODO: remove Light (once style inheritance works) -->
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.RewritesErrorsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.K6nele.Light.Dialog" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.ComboSelectorActivity"
+            android:exported="false"
+            android:label="@string/dialogTitleCombo"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.Preferences" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.RecServiceSelectorActivity"
+            android:exported="true"
+            android:label="@string/titleServices"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.Preferences" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.AppListActivity"
+            android:exported="false"
+            android:label="@string/labelActivityAppList"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.Preferences" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.GrammarListActivity"
+            android:exported="false"
+            android:label="@string/labelActivityGrammarList"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.Preferences" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.ServerListActivity"
+            android:exported="false"
+            android:label="@string/labelActivityServerList"
+            android:parentActivityName="com.alexvt.whisperinput.speak.PreferencesRecognitionServiceHttp" />
+        <!-- Exporting this to allow a shortcut to be created e.g. using Tasker. -->
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.RewritesSelectorActivity"
+            android:exported="true"
+            android:label="@string/labelActivityRewritesSelector"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.Preferences" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.RewritesLoaderActivity"
+            android:exported="true"
+            android:label="@string/labelActivityRewritesLoader"
+            android:theme="@style/Theme.K6nele.Dialog.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/tab-separated-values" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/tab-separated-values" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="*"
+                    android:scheme="k6" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.RewritesActivity"
+            android:exported="false"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.RewritesSelectorActivity">
+            <!--
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"></meta-data>
+                -->
+        </activity>
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.PermissionsRequesterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.K6nele.Translucent" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.FetchUrlActivity"
+            android:exported="true"
+            android:permission="com.alexvt.whisperinput.speak.permission.FETCH_URL"
+            android:theme="@style/Theme.K6nele.Translucent" />
+        <!-- TODO: require: com.alexvt.whisperinput.speak.permission.GET_PUT_SETTING -->
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.GetPutPreferenceActivity"
+            android:exported="true"
+            android:theme="@style/Theme.K6nele.Translucent" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.QuickSettingsActivity"
+            android:exported="false"
+            android:label="@string/labelActivityQuickSettings"
+            android:parentActivityName="com.alexvt.whisperinput.speak.activity.Preferences" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.activity.RecognitionServiceWsUrlActivity"
+            android:exported="false"
+            android:label="@string/titleWsServer"
+            android:parentActivityName="com.alexvt.whisperinput.speak.PreferencesRecognitionServiceWs"
+            android:windowSoftInputMode="stateUnchanged" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.SimpleDemo"
+            android:exported="false"
+            android:theme="@style/Theme.K6nele.Translucent" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.ExtrasDemo"
+            android:exported="true"
+            android:theme="@style/Theme.K6nele.Translucent" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.HandsfreeDemoActivity"
+            android:exported="true"
+            android:label="@string/labelActivityHandsfreeDemo">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.ChatDemoActivity"
+            android:exported="true"
+            android:label="@string/labelActivityChatDemo"
+            android:theme="@style/Theme.K6nele.Light" />
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.VoiceSearchDemo"
+            android:exported="false"
+            android:label="@string/labelActivityVoiceSearchDemo" />
+
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.EncoderDemoActivity"
+            android:exported="true"
+            android:label="@string/labelActivityEncoderDemo" />
+
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.EncoderListDemo"
+            android:exported="true"
+            android:label="@string/labelActivityEncoderListDemo" />
+
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.ImeListDemo"
+            android:exported="true"
+            android:label="@string/labelActivityImeListDemo" />
+
+        <activity
+            android:name="com.alexvt.whisperinput.speak.demo.FormDemoActivity"
+            android:exported="true"
+            android:label="@string/labelActivityFormDemo" />
+
+        <!-- This service is exported, i.e. any app can call K6nele, but needs to have recording-permission. -->
+        <!-- TODO: why can't I specify more permissions here? -->
+        <!-- Setting the process here solves the permission issue on Android 11. -->
+
+        <service
+            android:name="com.alexvt.whisperinput.speak.service.OfflineRecognitionService"
+            android:description="@string/summaryServiceOffline"
+            android:exported="true"
+            android:foregroundServiceType="microphone"
+            android:icon="@drawable/ic_service"
+            android:label="@string/labelRecognitionServiceOffline"
+            android:permission="android.permission.RECORD_AUDIO"
+            android:process=":service"
+            tools:ignore="Instantiatable">
+            <intent-filter>
+
+                <!-- The constant value is defined at RecognitionService.SERVICE_INTERFACE. -->
+                <action android:name="android.speech.RecognitionService" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.speech"
+                android:resource="@xml/recognition_service_offline" />
+            <!--
+            <meta-data
+                android:name="k6nele.test"
+                android:value="123" />
+                -->
+        </service>
+
+        <service
+            android:name="com.alexvt.whisperinput.speak.service.SpeechInputMethodService"
+            android:exported="true"
+            android:foregroundServiceType="microphone"
+            android:label="@string/labelIme"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/input_method" />
+        </service>
+
+        <provider
+            android:name="com.alexvt.whisperinput.speak.provider.AppsContentProvider"
+            android:authorities="com.alexvt.whisperinput.speak.provider.AppsContentProvider"
+            android:exported="false" />
+
+        <provider
+            android:name="com.alexvt.whisperinput.speak.provider.FileContentProvider"
+            android:authorities="com.alexvt.whisperinput.speak.provider.FileContentProvider"
+            android:exported="true"
+            android:permission="android.permission.RECORD_AUDIO" />
+    </application>
+
+</manifest>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menuRewritesAdd"
+        android:icon="@drawable/ic_menu_add"
+        android:title="@string/menuRewritesAdd"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menuRewritesHelp"
+        android:icon="@drawable/ic_menu_cloud_download"
+        android:title="@string/menuRewritesHelp"
+        app:showAsAction="ifRoom" />
+
+</menu>

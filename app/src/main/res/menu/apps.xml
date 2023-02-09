@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menuAppsSort"
+        android:icon="@drawable/ic_menu_sort"
+        android:title="@string/menuAppsSort"
+        app:showAsAction="ifRoom|withText">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/menuAppsSortByName"
+                    android:title="@string/menuAppsSortByName" />
+                <item
+                    android:id="@+id/menuAppsSortByCount"
+                    android:title="@string/menuAppsSortByCount" />
+                <item
+                    android:id="@+id/menuAppsSortByGrammar"
+                    android:title="@string/menuAppsSortByGrammar" />
+            </group>
+        </menu>
+    </item>
+</menu>

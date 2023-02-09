@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primary">#33AAEE</color>
+    <color name="primaryDark">#1188BB</color>
+    <color name="accent">#1188BB</color>
+
+    <!-- TODO: delete hard-coded colors -->
+    <!-- sand(Safe Hex3) -->
+    <color name="green1">#99cc33</color>
+    <color name="green3">#669900</color>
+
+    <!--
+    <color name="buttonNormalStart">#cc0000</color>
+    <color name="buttonNormalEnd">#660000</color>
+-->
+    <color name="transparent_blue">#990099cc</color>
+
+    <color name="transparent_grey800">#99f5f5f5</color>
+    <color name="panel_gradient_end">#eeeeee</color>
+    <color name="panel_gradient_start">#f0f0f0</color>
+
+    <color name="panel_pressed_gradient_end">#e0e0e0</color>
+    <color name="panel_pressed_gradient_start">#cdcdcd</color>
+
+</resources>

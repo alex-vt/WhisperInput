@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="errorResultAudioError">Audio recording failed. Maybe another app is currently recording.</string>
+    <string name="errorResultNetworkError">Server not reachable. The internet connection is broken or the server is down.</string>
+    <string name="errorResultClientError">General client error</string>
+    <string name="errorResultServerError">Recognizer server error</string>
+    <string name="errorResultNoMatch">Transcription was not found for the recorded speech. Please try again!</string>
+    <string name="errorResultCanceled">Canceled</string>
+
+    <string name="errorTtsLangNotAvailable">ERROR: Spoken output not available for language \"%1$s\"</string>
+    <string name="errorTtsInitError">ERROR: Spoken output initialization failed</string>
+    <string name="errorFailedLaunchIntent">ERROR: Intent is not serviced by any app</string>
+</resources>

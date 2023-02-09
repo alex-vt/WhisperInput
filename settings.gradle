@@ -1,0 +1,2 @@
+include ':app', ':speechutils:app'
+project(':speechutils:app').projectDir = new File('speechutils/app')

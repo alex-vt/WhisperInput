@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rectangle_gradient"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="end"
+    android:orientation="vertical"
+    android:padding="3dp"
+    android:scaleType="fitXY">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/layoutMargin4dp"
+            android:layout_toStartOf="@+id/bSettings"
+            android:ellipsize="end"
+            android:lines="3"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="@dimen/textSize2"
+            tools:text="@string/testComboLabels" />
+
+        <ImageButton
+            android:id="@+id/bSettings"
+            android:layout_width="@dimen/layoutMargin32"
+            android:layout_height="@dimen/layoutMargin32"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_go"
+            android:contentDescription="@string/cdSettings"
+            app:srcCompat="@drawable/ic_settings" />
+
+        <!--
+        <ImageButton
+            android:id="@+id/bEnterPip"
+            android:layout_width="@dimen/layoutMargin32"
+            android:layout_height="@dimen/layoutMargin32"
+            android:layout_below="@+id/bSettings"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_go"
+            android:contentDescription="Enter Picture-in-picture mode"
+            app:srcCompat="@drawable/ic_picture_in_picture"
+            tools:targetApi="O" />
+         -->
+    </RelativeLayout>
+
+    <com.alexvt.whisperinput.speak.view.SpeechInputView
+        android:id="@+id/vVoiceImeView"
+        android:layout_width="@dimen/layoutSpeechInputViewWidth"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layoutMargin1"
+            android:elevation="1dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:ellipsize="start"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/textSize2"
+                tools:text="@string/testComboLabels" />
+
+            <ee.ioc.phon.android.speechutils.view.MicButton
+                android:id="@+id/bImeStartStop"
+                android:layout_width="@dimen/layoutHeightButtonMicrophone"
+                android:layout_height="@dimen/layoutHeightButtonMicrophone"
+                android:layout_below="@+id/tvMessage"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/layoutMargin1"
+                android:background="@drawable/button_mic"
+                android:contentDescription="@string/cdMicrophone"
+                android:elevation="6dp"
+                android:gravity="center"
+                app:srcCompat="@drawable/ic_voice_search_api_material" />
+
+            <TextView
+                android:id="@+id/tvInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bImeStartStop"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_margin="@dimen/layoutMargin4dp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/textSize2"
+                tools:text="@string/buttonImeStop" />
+        </RelativeLayout>
+
+        <include
+            layout="@layout/button_combo_selector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="@string/testComboLabels" />
+
+    </com.alexvt.whisperinput.speak.view.SpeechInputView>
+
+</LinearLayout>
