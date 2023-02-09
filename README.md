@@ -2,6 +2,31 @@
 
 Offline voice input panel & keyboard with punctuation for Android, experimental, powered by Whisper AI & Kõnele components.
 
+[<img src="example/example_1.jpg" width="49%"/>](example/example_1.jpg)
+[<img src="example/example_2.jpg" width="49%"/>](example/example_2.jpg)
+
+Voice input is supported in English.
+
+
+# Features
+
+* Works as a voice keyboard (input method editor), a voice input panel, or an assistant app.
+* On-device speech recognition, offline.
+* Auto-start, auto-stop, audio cue option.
+
+
+## Installation
+
+Requirements: Java, Android SDK.
+
+Run: 
+```
+git clone https://github.com/alex-vt/WhisperInput.git
+cd WhisperInput/
+./gradlew assembleRelease
+```
+Install `app/build/outputs/apk/release/app-release.apk` on Android device.
+
 
 ## Underlying projects
 

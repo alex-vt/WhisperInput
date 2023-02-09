@@ -8,9 +8,4 @@
         android:title="@string/menuAbout"
         app:showAsAction="ifRoom|withText" />
 
-    <item
-        android:id="@+id/menuHelp"
-        android:icon="@drawable/ic_menu_help"
-        android:title="@string/menuHelp"
-        app:showAsAction="ifRoom|withText" />
 </menu>

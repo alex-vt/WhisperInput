@@ -144,17 +144,14 @@
     <string name="tvAbout">&lt;p>The app that offers speech-to-text user interfaces to other apps.
         Many apps contain a text area or a text field (e.g. a message box or a search bar) that can be edited using the &lt;b>input method editor (IME)&lt;/b>,
         aka the on-screen keyboard.
-        Provides an IME that is optimized for speech input. Modalities like swiping and buttons are also supported,
-        for situations where speaking is less convenient.
+        Provides an IME that is optimized for speech input.
         Many apps (e.g. intelligent assistants, navigation apps) also contain a microphone button
         that is linked to the &lt;b>standard Android speech recognition activity&lt;/b>.
         This app provides an implementation of this activity, and uses it itself as a launcher.&lt;/p>
 
         &lt;p>How to use the Whisper Input keyboard?
-        Tap the big yellow button and start dictating, the words will
-        appear at the cursor position in the text area.
-        Swipe to move the cursor, long-press and swipe to select text, double-tap to add space.
-        Define text editing commands as rewrite rules and execute them by voice or by buttons.&lt;/p>
+        Tap the big yellow button and start dictating.
+        Swipe to move the cursor, long-press and swipe to select text, double-tap to add space.&lt;/p>
 
         &lt;p>How to use the voice search activity? Its user interface is similar to the speech keyboard
         but the transcription is immediately executed (e.g. loaded into a web browser) or returned to the caller

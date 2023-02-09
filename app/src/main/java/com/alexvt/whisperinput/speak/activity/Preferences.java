@@ -77,11 +77,6 @@ public class Preferences extends AppCompatActivity implements PreferenceFragment
                 Intent searchIntent = new Intent(this, AboutActivity.class);
                 startActivity(searchIntent);
                 return true;
-            case R.id.menuHelp:
-                Intent view = new Intent(Intent.ACTION_VIEW);
-                view.setData(Uri.parse(getString(R.string.urlDoc)));
-                startActivity(view);
-                return true;
 
             default:
                 return super.onContextItemSelected(item);
