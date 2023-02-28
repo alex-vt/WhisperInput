@@ -19,6 +19,16 @@ Voice input is supported in English.
 
 Requirements: Java, Android SDK.
 
+Initial setup:
+* Put your `keystore.jks` to the project's root folder for signing the app.
+* Create a `signing.properties` in the project's root folder with `keystore.jks` credentials:
+```
+signingStoreLocation=../keystore.jks
+signingStorePassword=<keystore.jks password>
+signingKeyAlias=<keystore.jks alias>
+signingKeyPassword=<keystore.jks key password>
+```
+
 Run: 
 ```
 git clone https://github.com/alex-vt/WhisperInput.git
