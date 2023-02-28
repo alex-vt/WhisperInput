@@ -52,7 +52,7 @@ class OfflineRecognitionService : AbstractRecognitionService() {
             whisperRecognitionModel = WhisperRecognitionModel(application)
             Log.i("WHISPER configured, once per app lifecycle")
         }
-        // todo reimplement ad-hoc whisper.cpp integration
+        // todo reimplement ad-hoc whisper.cpp integration; allow the model to fully preload
         GlobalScope.launch {
             Log.i("WHISPER on standby")
             while (recorder?.state != AudioRecorder.State.RECORDING) {

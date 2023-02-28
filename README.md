@@ -8,7 +8,7 @@ Offline voice input panel & keyboard with punctuation for Android, experimental,
 Voice input is supported in English.
 
 
-# Features
+## Features
 
 * Works as a voice keyboard (input method editor), a voice input panel, or an assistant app.
 * On-device speech recognition, offline.
@@ -26,6 +26,13 @@ cd WhisperInput/
 ./gradlew assembleRelease
 ```
 Install `app/build/outputs/apk/release/app-release.apk` on Android device.
+
+
+## Development
+
+Points of interest:
+* [OfflineRecognitionService.kt](app/src/main/java/com/alexvt/whisperinput/speak/service/OfflineRecognitionService.kt)
+* [WhisperRecognitionModel.kt](app/src/main/java/com/whispercppdemo/WhisperRecognitionModel.kt)
 
 
 ## Underlying projects

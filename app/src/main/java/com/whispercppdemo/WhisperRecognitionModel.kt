@@ -75,7 +75,6 @@ class WhisperRecognitionModel(
         runBlocking {
             whisperContext?.release()
             whisperContext = null
-            //stopPlayback()
         }
     }
 
