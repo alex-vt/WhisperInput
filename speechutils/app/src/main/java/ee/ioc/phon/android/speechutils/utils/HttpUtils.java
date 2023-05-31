@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import ee.ioc.phon.android.speechutils.Log;
@@ -36,7 +37,7 @@ public class HttpUtils {
         byte[] outputInBytes = null;
 
         if (body != null) {
-            outputInBytes = body.getBytes("UTF-8");
+            outputInBytes = body.getBytes(StandardCharsets.UTF_8);
         }
 
         InputStream is = null;
@@ -97,7 +98,7 @@ public class HttpUtils {
     private static String inputStreamToString(final InputStream is, final int bufferSize) throws IOException {
         final char[] buffer = new char[bufferSize];
         final StringBuilder out = new StringBuilder();
-        Reader in = new InputStreamReader(is, "UTF-8");
+        Reader in = new InputStreamReader(is, StandardCharsets.UTF_8);
         while (true) {
             int rsz = in.read(buffer, 0, buffer.length);
             if (rsz < 0) {

@@ -16,17 +16,16 @@
 
 package ee.ioc.phon.android.speechutils;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+
 import android.media.AudioFormat;
 import android.media.AudioRecord;
-import android.os.Build;
 
 import androidx.annotation.RequiresPermission;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 import ee.ioc.phon.android.speechutils.utils.AudioUtils;
-
-import static android.Manifest.permission.RECORD_AUDIO;
 
 public abstract class AbstractAudioRecorder implements AudioRecorder {
 
@@ -85,12 +84,9 @@ public abstract class AbstractAudioRecorder implements AudioRecorder {
         if (mRecorder != null)
             release();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mRecorder = SpeechAudioRecord.create(audioSource, sampleRate, AudioFormat.CHANNEL_IN_MONO, RESOLUTION, bufferSize, false, false, false);
-        } else {
-            mRecorder = new SpeechRecord(audioSource, sampleRate, AudioFormat.CHANNEL_IN_MONO, RESOLUTION, bufferSize, false, false, false);
-        }
-        if (getSpeechRecordState() != SpeechRecord.STATE_INITIALIZED) {
+        mRecorder = SpeechAudioRecord.create(audioSource, sampleRate, AudioFormat.CHANNEL_IN_MONO, RESOLUTION, bufferSize, false, false, false);
+
+        if (getSpeechRecordState() != AudioRecord.STATE_INITIALIZED) {
             throw new IllegalStateException("SpeechRecord initialization failed");
         }
 
@@ -103,10 +99,10 @@ public abstract class AbstractAudioRecorder implements AudioRecorder {
     }
 
     protected int getBufferSize() {
-        int minBufferSizeInBytes = SpeechRecord.getMinBufferSize(mSampleRate, AudioFormat.CHANNEL_IN_MONO, RESOLUTION);
-        if (minBufferSizeInBytes == SpeechRecord.ERROR_BAD_VALUE) {
+        int minBufferSizeInBytes = AudioRecord.getMinBufferSize(mSampleRate, AudioFormat.CHANNEL_IN_MONO, RESOLUTION);
+        if (minBufferSizeInBytes == AudioRecord.ERROR_BAD_VALUE) {
             throw new IllegalArgumentException("SpeechRecord.getMinBufferSize: parameters not supported by hardware");
-        } else if (minBufferSizeInBytes == SpeechRecord.ERROR) {
+        } else if (minBufferSizeInBytes == AudioRecord.ERROR) {
             Log.e("SpeechRecord.getMinBufferSize: unable to query hardware for output properties");
             minBufferSizeInBytes = mSampleRate * (120 / 1000) * RESOLUTION_IN_BYTES * CHANNELS;
         }
@@ -370,7 +366,7 @@ public abstract class AbstractAudioRecorder implements AudioRecorder {
      */
     public synchronized void release() {
         if (mRecorder != null) {
-            if (mRecorder.getRecordingState() == SpeechRecord.RECORDSTATE_RECORDING) {
+            if (mRecorder.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
                 stop();
             }
             mRecorder.release();
@@ -382,9 +378,9 @@ public abstract class AbstractAudioRecorder implements AudioRecorder {
      * <p>Starts the recording, and sets the state to RECORDING.</p>
      */
     public void start() {
-        if (getSpeechRecordState() == SpeechRecord.STATE_INITIALIZED) {
+        if (getSpeechRecordState() == AudioRecord.STATE_INITIALIZED) {
             mRecorder.startRecording();
-            if (mRecorder.getRecordingState() == SpeechRecord.RECORDSTATE_RECORDING) {
+            if (mRecorder.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
                 setState(State.RECORDING);
                 new Thread() {
                     @RequiresPermission(RECORD_AUDIO)
@@ -408,8 +404,8 @@ public abstract class AbstractAudioRecorder implements AudioRecorder {
     public void stop() {
         // We check the underlying SpeechRecord state trying to avoid IllegalStateException.
         // If it still occurs then we catch it.
-        if (getSpeechRecordState() == SpeechRecord.STATE_INITIALIZED &&
-                mRecorder.getRecordingState() == SpeechRecord.RECORDSTATE_RECORDING) {
+        if (getSpeechRecordState() == AudioRecord.STATE_INITIALIZED &&
+                mRecorder.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
             try {
                 mRecorder.stop();
                 setState(State.STOPPED);
@@ -423,7 +419,7 @@ public abstract class AbstractAudioRecorder implements AudioRecorder {
 
     @RequiresPermission(RECORD_AUDIO)
     protected void recorderLoop(AudioRecord recorder) {
-        while (recorder.getRecordingState() == SpeechRecord.RECORDSTATE_RECORDING) {
+        while (recorder.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING) {
             int status = read(recorder, mBuffer);
             if (status < 0) {
                 handleError("status = " + status);
@@ -473,7 +469,7 @@ public abstract class AbstractAudioRecorder implements AudioRecorder {
 
     private int getSpeechRecordState() {
         if (mRecorder == null) {
-            return SpeechRecord.STATE_UNINITIALIZED;
+            return AudioRecord.STATE_UNINITIALIZED;
         }
         return mRecorder.getState();
     }

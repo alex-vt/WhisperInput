@@ -1,8 +1,6 @@
 package ee.ioc.phon.android.speechutils;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
@@ -36,30 +34,24 @@ public class TtsProvider {
         return say(text, null);
     }
 
-    @SuppressLint("NewApi")
     public int say(String text, final Listener listener) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-            mTts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+        mTts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
 
-                @Override
-                public void onDone(String utteranceId) {
-                    if (listener != null) listener.onDone();
-                }
-
-                @Override
-                public void onError(String utteranceId) {
-                    if (listener != null) listener.onDone();
-                }
-
-                @Override
-                public void onStart(String utteranceId) {
-                }
-            });
-        } else {
-            mTts.setOnUtteranceCompletedListener(utteranceId -> {
+            @Override
+            public void onDone(String utteranceId) {
                 if (listener != null) listener.onDone();
-            });
-        }
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+                if (listener != null) listener.onDone();
+            }
+
+            @Override
+            public void onStart(String utteranceId) {
+            }
+        });
+
         HashMap<String, String> params = new HashMap<>();
         params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTT_COMPLETED_FEEDBACK);
         return mTts.speak(text, TextToSpeech.QUEUE_FLUSH, params);
