@@ -1,6 +1,7 @@
 package com.whispercppdemo
 
 import android.content.res.AssetManager
+import com.whispercppdemo.whisper.WhisperLib
 import kotlinx.coroutines.*
 import java.io.InputStream
 import java.util.concurrent.Executors
@@ -14,7 +15,7 @@ class WhisperContext private constructor(private var ptr: Long) {
 
     suspend fun transcribeData(language: String, data: FloatArray): String = withContext(scope.coroutineContext) {
         require(ptr != 0L)
-        WhisperLib.fullTranscribe(ptr, language, data)
+        WhisperLib.fullTranscribe(ptr, language, 6, data)
         val textCount = WhisperLib.getTextSegmentCount(ptr)
         return@withContext buildString {
             for (i in 0 until textCount) {

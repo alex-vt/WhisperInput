@@ -6,6 +6,7 @@
 #include <sys/sysinfo.h>
 #include <string.h>
 #include "whisper.h"
+#include "ggml.h"
 
 #define UNUSED(x) (void)(x)
 #define TAG "JNI"
@@ -66,7 +67,7 @@ void inputStreamClose(void * ctx) {
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_whispercppdemo_WhisperLib_00024Companion_initContextFromInputStream(
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_initContextFromInputStream(
         JNIEnv *env, jobject thiz, jobject input_stream) {
     UNUSED(thiz);
 
@@ -130,7 +131,7 @@ static struct whisper_context *whisper_init_from_asset(
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_whispercppdemo_WhisperLib_00024Companion_initContextFromAsset(
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_initContextFromAsset(
         JNIEnv *env, jobject thiz, jobject assetManager, jstring asset_path_str) {
     UNUSED(thiz);
     struct whisper_context *context = NULL;
@@ -141,7 +142,7 @@ Java_com_whispercppdemo_WhisperLib_00024Companion_initContextFromAsset(
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_whispercppdemo_WhisperLib_00024Companion_initContext(
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_initContext(
         JNIEnv *env, jobject thiz, jstring model_path_str) {
     UNUSED(thiz);
     struct whisper_context *context = NULL;
@@ -152,7 +153,7 @@ Java_com_whispercppdemo_WhisperLib_00024Companion_initContext(
 }
 
 JNIEXPORT void JNICALL
-Java_com_whispercppdemo_WhisperLib_00024Companion_freeContext(
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_freeContext(
         JNIEnv *env, jobject thiz, jlong context_ptr) {
     UNUSED(env);
     UNUSED(thiz);
@@ -161,17 +162,13 @@ Java_com_whispercppdemo_WhisperLib_00024Companion_freeContext(
 }
 
 JNIEXPORT void JNICALL
-Java_com_whispercppdemo_WhisperLib_00024Companion_fullTranscribe(
-        JNIEnv *env, jobject thiz, jlong context_ptr, jstring language_str, jfloatArray audio_data) {
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_fullTranscribe(
+        JNIEnv *env, jobject thiz, jlong context_ptr, jstring language_str, jint num_threads, jfloatArray audio_data) {
     UNUSED(thiz);
     struct whisper_context *context = (struct whisper_context *) context_ptr;
     const char *language_chars = (*env)->GetStringUTFChars(env, language_str, NULL);
     jfloat *audio_data_arr = (*env)->GetFloatArrayElements(env, audio_data, NULL);
     const jsize audio_data_length = (*env)->GetArrayLength(env, audio_data);
-
-    // Leave 2 processors free (i.e. the high-efficiency cores).
-    int max_threads = 6; // todo resolve max(1, min(8, get_nprocs() - 2));
-    LOGI("Selecting %d threads", max_threads);
 
     // The below adapted from the Objective-C iOS sample
     struct whisper_full_params params = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
@@ -181,7 +178,7 @@ Java_com_whispercppdemo_WhisperLib_00024Companion_fullTranscribe(
     params.print_special = false;
     params.translate = false;
     params.language = language_chars;
-    params.n_threads = max_threads;
+    params.n_threads = num_threads;
     params.offset_ms = 0;
     params.no_context = true;
     params.single_segment = false;
@@ -198,7 +195,7 @@ Java_com_whispercppdemo_WhisperLib_00024Companion_fullTranscribe(
 }
 
 JNIEXPORT jint JNICALL
-Java_com_whispercppdemo_WhisperLib_00024Companion_getTextSegmentCount(
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_getTextSegmentCount(
         JNIEnv *env, jobject thiz, jlong context_ptr) {
     UNUSED(env);
     UNUSED(thiz);
@@ -207,11 +204,37 @@ Java_com_whispercppdemo_WhisperLib_00024Companion_getTextSegmentCount(
 }
 
 JNIEXPORT jstring JNICALL
-Java_com_whispercppdemo_WhisperLib_00024Companion_getTextSegment(
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_getTextSegment(
         JNIEnv *env, jobject thiz, jlong context_ptr, jint index) {
     UNUSED(thiz);
     struct whisper_context *context = (struct whisper_context *) context_ptr;
     const char *text = whisper_full_get_segment_text(context, index);
     jstring string = (*env)->NewStringUTF(env, text);
     return string;
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_getSystemInfo(
+        JNIEnv *env, jobject thiz
+) {
+    UNUSED(thiz);
+    const char *sysinfo = whisper_print_system_info();
+    jstring string = (*env)->NewStringUTF(env, sysinfo);
+    return string;
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_benchMemcpy(JNIEnv *env, jobject thiz,
+                                                                      jint n_threads) {
+    UNUSED(thiz);
+    const char *bench_ggml_memcpy = whisper_bench_memcpy_str(n_threads);
+    jstring string = (*env)->NewStringUTF(env, bench_ggml_memcpy);
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_whispercppdemo_whisper_WhisperLib_00024Companion_benchGgmlMulMat(JNIEnv *env, jobject thiz,
+                                                                          jint n_threads) {
+    UNUSED(thiz);
+    const char *bench_ggml_mul_mat = whisper_bench_ggml_mul_mat_str(n_threads);
+    jstring string = (*env)->NewStringUTF(env, bench_ggml_mul_mat);
 }
