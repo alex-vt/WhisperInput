@@ -5,8 +5,6 @@ Offline voice input panel & keyboard with punctuation for Android, experimental,
 [<img src="example/example_1.jpg" width="49%"/>](example/example_1.jpg)
 [<img src="example/example_2.jpg" width="49%"/>](example/example_2.jpg)
 
-Voice input is supported in English. Multilingual input can be used, see in Installation.
-
 
 ## Features
 
@@ -34,7 +32,7 @@ signingStorePassword=<keystore.jks password>
 signingKeyAlias=<keystore.jks alias>
 signingKeyPassword=<keystore.jks key password>
 ```
-* _(Optional)_ To replace the included English-only speech model with a bigger or multilingual one, replace `ggml-tiny.en.bin` in the [assets/models](https://github.com/alex-vt/WhisperInput/tree/main/app/src/main/assets/models) folder with another `.bin` type model from the [whisper.cpp model list](https://huggingface.co/ggerganov/whisper.cpp/tree/main). The models without `.en.` are multilingual. Tiny or base size models recommended. _Note:_ a multilingual model is expected to perform worse in English than the `.en.` model of the similar size.
+* _(Optional)_ To replace the included speech models with a bigger, replace `ggml-tiny.en.bin` or `ggml-tiny.bin` in the [assets/models](https://github.com/alex-vt/WhisperInput/tree/main/app/src/main/assets/models) folder with another `.bin` type model from the [whisper.cpp model list](https://huggingface.co/ggerganov/whisper.cpp/tree/main). The models without `.en.` are multilingual. Tiny or base size models recommended. _Note:_ a multilingual model is expected to perform worse in English than the `.en.` model of the similar size.
 
 Run: 
 ```

@@ -54,11 +54,8 @@ public class GetLanguageDetailsReceiver extends BroadcastReceiver {
         // in general support different languages). Not sure that the framework supports this.
 
         ArrayList<String> langs = new ArrayList<>();
-        langs.add("et-EE");
-        langs.add("en-US");
 
         Bundle extras = new Bundle();
-        extras.putString(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "et-EE");
         extras.putStringArrayList(RecognizerIntent.EXTRA_SUPPORTED_LANGUAGES, langs);
         setResultExtras(extras);
     }

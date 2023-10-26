@@ -247,11 +247,12 @@ public class InputConnectionCommandEditor implements CommandEditor {
             public Op run() {
                 Op undo = null;
                 try {
-                    if (IntentUtils.startActivityIfAvailable(mContext, JsonUtils.createIntent(json.replace(F_SELECTION, getSelectedText())))) {
-                        undo = NO_OP;
-                    }
+                    IntentUtils.startActivity(mContext, JsonUtils.createIntent(json.replace(F_SELECTION, getSelectedText())));
+                    undo = NO_OP;
                 } catch (JSONException e) {
-                    Log.i("startSearchActivity: JSON: " + e.getMessage());
+                    Log.i("startActivity: JSON: " + e.getMessage());
+                } catch (SecurityException e) {
+                    Log.i("startActivity: Security: " + e.getMessage());
                 }
                 return undo;
             }

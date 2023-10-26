@@ -1,8 +1,9 @@
 package ee.ioc.phon.android.speechutils.service;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -24,8 +25,6 @@ import ee.ioc.phon.android.speechutils.Extras;
 import ee.ioc.phon.android.speechutils.Log;
 import ee.ioc.phon.android.speechutils.RawAudioRecorder;
 import ee.ioc.phon.android.speechutils.utils.PreferenceUtils;
-
-import static android.Manifest.permission.RECORD_AUDIO;
 
 /**
  * Performs audio recording and is meant for cloud services.
@@ -355,17 +354,14 @@ public abstract class AbstractRecognitionService extends RecognitionService {
     }
 
     /**
-     * Constructs a recorder based on the encoder type and sample rate. By default returns the raw
-     * audio recorder. If an unsupported encoder is specified then throws an exception.
+     * Constructs a recorder based on the encoder type and sample rate.
+     * Returns the raw audio recorder, unless the encoder type is "audio/x-flac".
      */
     @RequiresPermission(RECORD_AUDIO)
-    protected static AudioRecorder createAudioRecorder(String encoderType, int sampleRate) throws IOException {
+    protected static AudioRecorder createAudioRecorder(String encoderType, int sampleRate) {
         // TODO: take from an enum
         if ("audio/x-flac".equals(encoderType)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                return new EncodedAudioRecorder(sampleRate);
-            }
-            throw new IOException(encoderType + " not supported");
+            return new EncodedAudioRecorder(sampleRate);
         }
         return new RawAudioRecorder(sampleRate);
     }

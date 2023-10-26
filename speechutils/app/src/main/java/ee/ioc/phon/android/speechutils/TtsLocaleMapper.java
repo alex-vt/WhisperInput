@@ -13,6 +13,8 @@ public class TtsLocaleMapper {
 
     static {
         List<Locale> aListEt = new ArrayList<>();
+        aListEt.add(new Locale("fi-FI"));
+        aListEt.add(new Locale("es-ES"));
         SIMILAR_LOCALES_ET = Collections.unmodifiableList(aListEt);
     }
 
@@ -20,6 +22,8 @@ public class TtsLocaleMapper {
 
     static {
         Map<Locale, List<Locale>> aMap = new HashMap<>();
+        aMap.put(new Locale("et"), SIMILAR_LOCALES_ET);
+        aMap.put(new Locale("et-EE"), SIMILAR_LOCALES_ET);
         SIMILAR_LOCALES = Collections.unmodifiableMap(aMap);
     }
 

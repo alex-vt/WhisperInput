@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="errorResultAudioError">Lindistamine luhtus. Võibolla mõni teine rakendus parasjagu lindistab.</string>
+    <string name="errorResultNetworkError">Puudub ühendus kõnetuvastusserveriga. Võrguühendus on välja lülitatud või server ei tööta.</string>
+    <string name="errorResultClientError">Rakenduse viga</string>
+    <string name="errorResultServerError">Kõnetuvastusserveri viga</string>
+    <string name="errorResultNoMatch">Sisendkõne transkribeerimine luhtus. Proovige uuesti!</string>
+    <string name="errorResultCanceled">Katkestatud</string>
+
+    <string name="errorTtsLangNotAvailable">VIGA: kõneväljund ei ole keele \"%1$s\" jaoks installeeritud</string>
+    <string name="errorTtsInitError">VIGA: kõneväljundi konfigureerimine luhtus</string>
+    <string name="errorFailedLaunchIntent">VIGA: Intent-päringule vastavat rakendust ei leitud</string>
+</resources>
