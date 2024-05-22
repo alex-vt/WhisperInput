@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class ChunkedWebRecSession implements RecSession {
+public class ChunkedRecSession implements RecSession {
 
     public static final String CONF_BASE_URL = "base_url";
 
@@ -46,21 +46,21 @@ public class ChunkedWebRecSession implements RecSession {
     private HttpURLConnection connection;
     private OutputStream out;
 
-    private ChunkedWebRecSessionResult result;
+    private ChunkedRecSessionResult result;
     private boolean finished = false;
 
 
-    public ChunkedWebRecSession(URL wsUrl) {
+    public ChunkedRecSession(URL wsUrl) {
         this(wsUrl, null, null, 1);
     }
 
 
-    public ChunkedWebRecSession(URL wsUrl, URL lmUrl) {
+    public ChunkedRecSession(URL wsUrl, URL lmUrl) {
         this(wsUrl, lmUrl, null, 1);
     }
 
 
-    public ChunkedWebRecSession(URL wsUrl, URL lmUrl, String lang) {
+    public ChunkedRecSession(URL wsUrl, URL lmUrl, String lang) {
         this(wsUrl, lmUrl, lang, 1);
     }
 
@@ -78,7 +78,7 @@ public class ChunkedWebRecSession implements RecSession {
      * @param lang  Target language to which to translate the raw recognizer output (in case PGF)
      * @param nbest Max number of transcription hypotheses to return
      */
-    public ChunkedWebRecSession(URL wsUrl, URL lmUrl, String lang, int nbest) {
+    public ChunkedRecSession(URL wsUrl, URL lmUrl, String lang, int nbest) {
         if (lmUrl == null) {
             configuration.setProperty(CONF_BASE_URL, wsUrl.toExternalForm() + "?nbest=" + nbest);
         } else if (lang == null) {
@@ -125,7 +125,7 @@ public class ChunkedWebRecSession implements RecSession {
     }
 
 
-    public ChunkedWebRecSessionResult getResult() throws IOException {
+    public ChunkedRecSessionResult getResult() throws IOException {
         return result;
     }
 
@@ -149,7 +149,7 @@ public class ChunkedWebRecSession implements RecSession {
                     out.close();
                 }
                 InputStream is = new BufferedInputStream(connection.getInputStream());
-                result = new ChunkedWebRecSessionResult(new InputStreamReader(is));
+                result = new ChunkedRecSessionResult(new InputStreamReader(is));
             } finally {
                 connection.disconnect();
                 finished = true;

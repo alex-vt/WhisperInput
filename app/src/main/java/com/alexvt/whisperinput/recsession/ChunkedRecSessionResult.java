@@ -14,13 +14,13 @@ import java.util.List;
  *
  * @author Kaarel Kaljurand
  */
-public class ChunkedWebRecSessionResult implements RecSessionResult {
+public class ChunkedRecSessionResult implements RecSessionResult {
 
     private final List<Hypothesis> mHypotheses = new ArrayList<>();
     private final List<String> mUtterances = new ArrayList<>();
     private final List<String> mLinearizations = new ArrayList<>();
 
-    public ChunkedWebRecSessionResult(InputStreamReader reader) throws IOException {
+    public ChunkedRecSessionResult(InputStreamReader reader) throws IOException {
         Object obj = JSONValue.parse(reader);
 
         if (obj == null) {

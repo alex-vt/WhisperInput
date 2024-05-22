@@ -202,7 +202,7 @@ public class SpeechInputMethodService extends InputMethodService {
 
         mInputView.init(
                 R.array.keysIme,
-                new CallerInfo(makeExtras(), editorInfo, getPackageName()),
+                new CallerInfo(makeExtras(mPrefs, mRes), editorInfo, getPackageName()),
                 true,
                 app
         );
@@ -341,10 +341,11 @@ public class SpeechInputMethodService extends InputMethodService {
         return "";
     }
 
-    private static Bundle makeExtras() {
+    private static Bundle makeExtras(SharedPreferences mPrefs, Resources mRes) {
         Bundle extras = new Bundle();
         // no override extras.putBoolean(Extras.EXTRA_UNLIMITED_DURATION, true);
-        extras.putBoolean(Extras.EXTRA_DICTATION_MODE, true);
+        //extras.putBoolean(Extras.EXTRA_DICTATION_MODE, true);
+        extras.putBoolean(Extras.EXTRA_UNLIMITED_DURATION, !PreferenceUtils.getPrefBoolean(mPrefs, mRes, R.string.keyOfflineAutoStopAfterPause, R.bool.defaultOfflineAutoStopAfterPause));
         return extras;
     }
 

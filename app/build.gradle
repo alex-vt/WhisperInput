@@ -5,15 +5,12 @@ dependencies {
     implementation project(':speechutils:app')
     // TODO: used only in ChunkedWebRecSessionResult, use Android's JSON library instead
     implementation 'com.googlecode.json-simple:json-simple:1.1'
-    implementation 'com.koushikdutta.async:androidasync:3.1.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.20'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    // implementation 'androidx.activity:activity:1.4.0'
     implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
     implementation 'com.google.android.material:material:1.7.0'
-    // Added only to resolve https://issuetracker.google.com/issues/242384116
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
 }
 
@@ -31,7 +28,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 101
-        versionName '0.1.1'
+        versionName '0.2.0'
         vectorDrawables.useSupportLibrary = true
         resConfigs 'en'
     }
@@ -67,7 +64,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            jniDebuggable false
+            jniDebuggable true
             signingConfig signingConfigs.release
         }
         release {

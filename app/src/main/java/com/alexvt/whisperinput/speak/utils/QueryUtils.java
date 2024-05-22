@@ -9,7 +9,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alexvt.whisperinput.speak.ChunkedWebRecSessionBuilder;
+import com.alexvt.whisperinput.speak.ChunkedRecSessionBuilder;
 import com.alexvt.whisperinput.speak.Log;
 import ee.ioc.phon.android.speechutils.Extras;
 
@@ -30,7 +30,7 @@ public final class QueryUtils {
      * ChunkedWebRecSessionBuilder to extract some additional extras.
      * TODO: unify this better
      */
-    public static List<Pair<String, String>> getQueryParams(Intent intent, ChunkedWebRecSessionBuilder builder) {
+    public static List<Pair<String, String>> getQueryParams(Intent intent, ChunkedRecSessionBuilder builder) {
         if (Log.DEBUG) Log.i(builder.toStringArrayList());
         List<Pair<String, String>> list = new ArrayList<>();
         flattenBundle("editorInfo_", list, intent.getBundleExtra(Extras.EXTRA_EDITOR_INFO));

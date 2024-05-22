@@ -103,10 +103,6 @@ public class AppListActivity extends AbstractContentActivity {
                         () -> removeApp(key, App.Columns.GRAMMAR)
                 ).show();
                 return true;
-            case R.id.cmAppAssignServer:
-                Intent intentServer = new Intent(AppListActivity.this, ServerListActivity.class);
-                startActivityForResult(intentServer, ACTIVITY_SELECT_SERVER_URL);
-                return true;
             case R.id.cmAppRemoveServer:
                 Utils.getYesNoDialog(
                         this,

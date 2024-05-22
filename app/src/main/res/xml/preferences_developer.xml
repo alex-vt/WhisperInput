@@ -3,17 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/titleScreenDevel">
 
-    <!--
-    <Preference
-        android:summary="@string/summaryQuickSettings"
-        android:title="@string/titleQuickSettings"
-        app:iconSpaceReserved="false">
-        <intent
-            android:targetClass="com.alexvt.whisperinput.speak.activity.QuickSettingsActivity"
-            android:targetPackage="com.alexvt.whisperinput" />
-    </Preference>
-    -->
-    <CheckBoxPreference
+     <CheckBoxPreference
         android:defaultValue="@bool/defaultGetPutPrefSkipUi"
         android:key="@string/keyGetPutPrefSkipUi"
         android:summary="@string/summaryGetPutPrefSkipUi"
@@ -28,14 +18,6 @@
             app:iconSpaceReserved="false">
             <intent
                 android:targetClass="com.alexvt.whisperinput.speak.demo.SimpleDemo"
-                android:targetPackage="com.alexvt.whisperinput" />
-        </Preference>
-        <Preference
-            android:summary="@string/summaryExtrasDemo"
-            android:title="@string/labelActivityExtrasDemo"
-            app:iconSpaceReserved="false">
-            <intent
-                android:targetClass="com.alexvt.whisperinput.speak.demo.ExtrasDemo"
                 android:targetPackage="com.alexvt.whisperinput" />
         </Preference>
         <Preference

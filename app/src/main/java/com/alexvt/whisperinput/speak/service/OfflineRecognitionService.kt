@@ -7,7 +7,7 @@ import android.speech.RecognizerIntent
 import android.util.Pair
 import androidx.annotation.RequiresPermission
 import com.whispercppdemo.WhisperRecognitionModel
-import com.alexvt.whisperinput.speak.ChunkedWebRecSessionBuilder
+import com.alexvt.whisperinput.speak.ChunkedRecSessionBuilder
 import com.alexvt.whisperinput.speak.Log
 import com.alexvt.whisperinput.R
 import com.alexvt.whisperinput.speak.utils.QueryUtils
@@ -29,7 +29,11 @@ class OfflineRecognitionService : AbstractRecognitionService() {
     @Throws(IOException::class)
     override fun configure(recognizerIntent: Intent?) {
         val bundle: Bundle = extras
-        val builder = ChunkedWebRecSessionBuilder(this, bundle, null)
+        val builder = ChunkedRecSessionBuilder(
+            this,
+            bundle,
+            null
+        )
         val list: MutableList<Pair<String, String>> =
             QueryUtils.getQueryParams(recognizerIntent, builder)
         list.add(Pair("content-type", audioRecorder.contentType))

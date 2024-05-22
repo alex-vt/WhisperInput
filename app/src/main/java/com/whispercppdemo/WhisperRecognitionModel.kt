@@ -11,6 +11,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 
+import com.whispercpp.whisper.WhisperContext;
+
 
 class WhisperRecognitionModel(
     private val context: Context
@@ -53,9 +55,10 @@ class WhisperRecognitionModel(
         printMessage("Loading model...\n")
         val models = context.assets.list("models/")
         if (models != null) {
+            val model = models[0];
             whisperContext =
-                WhisperContext.createContextFromAsset(context.assets, "models/" + models[0])
-            printMessage("Loaded model ${models[0]}.\n")
+                WhisperContext.createContextFromAsset(context.assets, "models/" + model)
+            printMessage("Loaded model ${model}.\n")
         }
     }
 
@@ -66,8 +69,8 @@ class WhisperRecognitionModel(
         printMessage("Reading wave bytes...\n")
         val data = decodeBytes(bytes)
         printMessage("Transcribing data...\n")
-        val text = whisperContext?.transcribeData(data)
-        printMessage("Done: $text\n")
+        val text = whisperContext?.transcribeData(data, false)
+        printMessage("Done transcribing data.\n")
         text?.let { onResultListener(it) } ?: onResultListener("[no test!]")
     }
 

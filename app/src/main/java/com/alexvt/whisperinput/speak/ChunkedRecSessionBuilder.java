@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import com.alexvt.whisperinput.recsession.ChunkedWebRecSession;
+import com.alexvt.whisperinput.recsession.ChunkedRecSession;
 import com.alexvt.whisperinput.speak.utils.Utils;
 import ee.ioc.phon.android.speechutils.Extras;
 import ee.ioc.phon.android.speechutils.utils.BundleUtils;
@@ -64,7 +64,7 @@ import com.alexvt.whisperinput.R;
  * 		number of requested hypothesis
  * </pre>
  */
-public class ChunkedWebRecSessionBuilder {
+public class ChunkedRecSessionBuilder {
 
     public static final int MAX_RESULTS = 5;
 
@@ -82,7 +82,7 @@ public class ChunkedWebRecSessionBuilder {
     final private String mDeviceId;
     final private String mCaller;
 
-    public ChunkedWebRecSessionBuilder(Context context, Bundle extras, ComponentName callingActivity) throws MalformedURLException {
+    public ChunkedRecSessionBuilder(Context context, Bundle extras, ComponentName callingActivity) throws MalformedURLException {
         mContext = context;
 
         if (extras == null) {
@@ -162,8 +162,8 @@ public class ChunkedWebRecSessionBuilder {
     }
 
 
-    public ChunkedWebRecSession build() {
-        ChunkedWebRecSession recSession = new ChunkedWebRecSession(mWsUrl, mLmUrl, mGrammarTargetLang, mNbest);
+    public ChunkedRecSession build() {
+        ChunkedRecSession recSession = new ChunkedRecSession(mWsUrl, mLmUrl, mGrammarTargetLang, mNbest);
 
         if (mPhrase != null) {
             recSession.setPhrase(mPhrase);
