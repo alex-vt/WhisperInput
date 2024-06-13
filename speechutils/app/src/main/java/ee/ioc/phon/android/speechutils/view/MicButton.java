@@ -15,7 +15,6 @@ import androidx.core.content.res.ResourcesCompat;
 import java.util.ArrayList;
 import java.util.List;
 
-import ee.ioc.phon.android.speechutils.Log;
 import ee.ioc.phon.android.speechutils.R;
 
 // TODO: rather use com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -79,7 +78,6 @@ public class MicButton extends androidx.appcompat.widget.AppCompatImageButton {
     }
 
     public void setState(State state) {
-        Log.i("WHISPER MicButton state " + state.name());
         switch (state) {
             case INIT:
             case ERROR:

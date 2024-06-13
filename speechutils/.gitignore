@@ -1,0 +1,11 @@
+.gradle/
+.idea/
+app/app.iml
+app/build/
+./build.gradle
+build/
+gradle/
+gradlew
+gradlew.bat
+local.properties
+speechutils.iml

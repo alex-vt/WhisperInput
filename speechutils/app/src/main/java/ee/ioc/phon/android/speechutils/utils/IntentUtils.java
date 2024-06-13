@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -22,7 +21,6 @@ import androidx.annotation.NonNull;
 
 import org.json.JSONException;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +74,10 @@ public final class IntentUtils {
      * In split-screen mode, launch the activity into the other screen. Test this by:
      * 1. Launch Kõnele, 2. Start split-screen, 3. Press Kõnele mic button and speak,
      * 4. The results should be loaded into the other window.
+     * <p>
+     * Requires android.permission.QUERY_ALL_PACKAGES
+     * <p>
+     * TODO: do the actions need to be declared in the queries-section of the manifest?
      *
      * @param activity activity
      * @param query    search query
@@ -89,11 +91,13 @@ public final class IntentUtils {
         //intent0.putExtra(Intent.EXTRA_ASSIST_INPUT_HINT_KEYBOARD, false);
         //intent0.putExtra(Intent.EXTRA_ASSIST_PACKAGE, context.getPackageName());
         startActivityIfAvailable(activity,
-                getGoogleSearchIntent(query),
                 getSearchIntent(Intent.ACTION_WEB_SEARCH, query),
                 getSearchIntent(Intent.ACTION_SEARCH, query));
     }
 
+    /**
+     * Requires android.permission.QUERY_ALL_PACKAGES
+     */
     public static boolean startActivityIfAvailable(@NonNull Context context, Intent... intents) {
         PackageManager mgr = context.getPackageManager();
         try {
@@ -141,6 +145,19 @@ public final class IntentUtils {
             // permission, e.g. the CALL intent,
             // or according to Google Play, com.vlingo.midas/.settings.SettingsScreen
             showMessage(context, e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Starts an activity from the given context, possibly throwing a security exception.
+     */
+    public static void startActivity(@NonNull Context context, Intent intent) {
+        if (context instanceof Activity) {
+            context.startActivity(intent);
+        } else {
+            // Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | intent.getFlags());
+            context.startActivity(intent);
         }
     }
 
@@ -205,7 +222,7 @@ public final class IntentUtils {
                     Intent intent = JsonUtils.createIntent(rewrite.mArgs[0]);
                     switch (rewrite.mId) {
                         case "activity":
-                            startActivityIfAvailable(context, intent);
+                            startActivity(context, intent);
                             break;
                         case "service":
                             // TODO
@@ -218,6 +235,9 @@ public final class IntentUtils {
                     }
                 } catch (JSONException e) {
                     Log.i("launchIfIntent: JSON: " + e.getMessage());
+                    showMessage(context, e.getLocalizedMessage());
+                } catch (SecurityException e) {
+                    Log.i("launchIfIntent: Security: " + e.getMessage());
                     showMessage(context, e.getLocalizedMessage());
                 }
                 return null;
@@ -236,7 +256,7 @@ public final class IntentUtils {
                 Intent intent = JsonUtils.createIntent(rewrite.mArgs[0]);
                 switch (rewrite.mId) {
                     case "activity":
-                        startActivityIfAvailable(context, intent);
+                        startActivity(context, intent);
                         break;
                     case "service":
                         // TODO
@@ -249,6 +269,9 @@ public final class IntentUtils {
                 }
             } catch (JSONException e) {
                 Log.i("launchIfIntent: JSON: " + e.getMessage());
+                showMessage(context, e.getLocalizedMessage());
+            } catch (SecurityException e) {
+                Log.i("launchIfIntent: Security: " + e.getMessage());
                 showMessage(context, e.getLocalizedMessage());
             }
             return null;
@@ -285,6 +308,8 @@ public final class IntentUtils {
      * activity belongs to the app that calls this method.
      * We assume that activities are not exported for a reason, and thus will declare the
      * intent unserviceable if a non-exported activity matches the intent.
+     * <p>
+     * Requires android.permission.QUERY_ALL_PACKAGES
      *
      * @param mgr    PackageManager
      * @param intent Intent
@@ -306,18 +331,9 @@ public final class IntentUtils {
     private static Intent getSearchIntent(String action, CharSequence query) {
         Intent intent = new Intent(action);
         intent.putExtra(SearchManager.QUERY, query);
-        return intent;
-    }
-
-    private static Intent getGoogleSearchIntent(CharSequence query) {
-        String escapedQuery;
-        try {
-            escapedQuery = URLEncoder.encode(query.toString(), "UTF-8");
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT);
         }
-        Uri uri = Uri.parse("https://www.google.com/search?q=" + escapedQuery);
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         return intent;
     }
 

@@ -4,12 +4,12 @@
     <!-- 1 = top,lighter; 2 = bottom,darker -->
     <!-- <color name="transparent">#00000000</color> -->
     <color name="very_transparent">#11404040</color>
-    <color name="buttonNormal1">#33AAEE</color>
-    <color name="buttonNormal2">#1188BB</color>
-    <color name="buttonPressed1">#1188BB</color>
-    <color name="buttonPressed2">#33AAEE</color>
-    <color name="buttonFocused1">#33AAEE</color>
-    <color name="buttonFocused2">#33AAEE</color>
+    <color name="buttonNormal1">#ffcc00</color>
+    <color name="buttonNormal2">#996600</color>
+    <color name="buttonPressed1">#996600</color>
+    <color name="buttonPressed2">#ffcc00</color>
+    <color name="buttonFocused1">#ffcc00</color>
+    <color name="buttonFocused2">#ffcc00</color>
     <!-- Red 800 (Primary = (198,40,40), Light, Dark) -->
     <color name="buttonRecordingNormal2">#c62828</color>
     <color name="buttonRecordingNormal1">#ff5f52</color>

@@ -33,7 +33,7 @@ public class Extras {
     /**
      * String.
      * Class name of the recognizer component name, e.g.
-     * ee.ioc.phon.android.speak/.service.OfflineRecognitionService
+     * ee.ioc.phon.android.speak/.service.WebSocketRecognitionService
      */
     public static final String EXTRA_SERVICE_COMPONENT = "ee.ioc.phon.android.extra.SERVICE_COMPONENT";
 

@@ -16,7 +16,8 @@
 
 package ee.ioc.phon.android.speechutils;
 
-import android.annotation.TargetApi;
+import static android.Manifest.permission.RECORD_AUDIO;
+
 import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
@@ -28,8 +29,6 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import ee.ioc.phon.android.speechutils.utils.AudioUtils;
-
-import static android.Manifest.permission.RECORD_AUDIO;
 
 /**
  * Based on https://android.googlesource.com/platform/cts/+/jb-mr2-release/tests/tests/media/src/android/media/cts/EncoderTest.java
@@ -116,7 +115,6 @@ public class EncodedAudioRecorder extends AbstractAudioRecorder {
         return bytes;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @RequiresPermission(RECORD_AUDIO)
     @Override
     protected void recorderLoop(AudioRecord speechRecord) {
@@ -142,14 +140,12 @@ public class EncodedAudioRecorder extends AbstractAudioRecorder {
 
     // TODO: we currently return the first suitable codec
     private MediaCodec getCodec(MediaFormat format) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            List<String> componentNames = AudioUtils.getEncoderNamesForType(format.getString(MediaFormat.KEY_MIME));
-            for (String componentName : componentNames) {
-                Log.i("component/format: " + componentName + "/" + format);
-                MediaCodec codec = AudioUtils.createCodec(componentName, format);
-                if (codec != null) {
-                    return codec;
-                }
+        List<String> componentNames = AudioUtils.getEncoderNamesForType(format.getString(MediaFormat.KEY_MIME));
+        for (String componentName : componentNames) {
+            Log.i("component/format: " + componentName + "/" + format);
+            MediaCodec codec = AudioUtils.createCodec(componentName, format);
+            if (codec != null) {
+                return codec;
             }
         }
         return null;
@@ -192,56 +188,49 @@ public class EncodedAudioRecorder extends AbstractAudioRecorder {
     /**
      * Copy audio from the recorder into the encoder.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @RequiresPermission(RECORD_AUDIO)
     private int queueInputBuffer(MediaCodec codec, ByteBuffer[] inputBuffers, int index, AudioRecord speechRecord) {
-        if (speechRecord == null || speechRecord.getRecordingState() != SpeechRecord.RECORDSTATE_RECORDING) {
+        if (speechRecord == null || speechRecord.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
             return -1;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            ByteBuffer inputBuffer = inputBuffers[index];
-            inputBuffer.clear();
-            int size = inputBuffer.limit();
-            byte[] buffer = new byte[size];
-            int status = read(speechRecord, buffer);
-            if (status < 0) {
-                handleError("status = " + status);
-                return -1;
-            }
-            inputBuffer.put(buffer);
-            codec.queueInputBuffer(index, 0, size, 0, 0);
-            return size;
+        ByteBuffer inputBuffer = inputBuffers[index];
+        inputBuffer.clear();
+        int size = inputBuffer.limit();
+        byte[] buffer = new byte[size];
+        int status = read(speechRecord, buffer);
+        if (status < 0) {
+            handleError("status = " + status);
+            return -1;
         }
-        return -1;
+        inputBuffer.put(buffer);
+        codec.queueInputBuffer(index, 0, size, 0, 0);
+        return size;
     }
 
     /**
      * Save the encoded (output) buffer into the complete encoded recording.
      * TODO: copy directly (without the intermediate byte array)
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void dequeueOutputBuffer(MediaCodec codec, ByteBuffer[] outputBuffers, int index, MediaCodec.BufferInfo info) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            ByteBuffer buffer = outputBuffers[index];
-            Log.i("size/remaining: " + info.size + "/" + buffer.remaining());
-            if (info.size <= buffer.remaining()) {
-                final byte[] bufferCopied = new byte[info.size];
-                buffer.get(bufferCopied); // TODO: catch BufferUnderflow
-                // TODO: do we need to clear?
-                // on N5: always size == remaining(), clearing is not needed
-                // on SGS2: remaining decreases until it becomes less than size, which results in BufferUnderflow
-                // (but SGS2 records only zeros anyway)
-                //buffer.clear();
-                codec.releaseOutputBuffer(index, false);
-                addEncoded(bufferCopied);
-                if (Log.DEBUG) {
-                    AudioUtils.showSomeBytes("out", bufferCopied);
-                }
-            } else {
-                Log.e("size > remaining");
-                codec.releaseOutputBuffer(index, false);
+        ByteBuffer buffer = outputBuffers[index];
+        Log.i("size/remaining: " + info.size + "/" + buffer.remaining());
+        if (info.size <= buffer.remaining()) {
+            final byte[] bufferCopied = new byte[info.size];
+            buffer.get(bufferCopied); // TODO: catch BufferUnderflow
+            // TODO: do we need to clear?
+            // on N5: always size == remaining(), clearing is not needed
+            // on SGS2: remaining decreases until it becomes less than size, which results in BufferUnderflow
+            // (but SGS2 records only zeros anyway)
+            //buffer.clear();
+            codec.releaseOutputBuffer(index, false);
+            addEncoded(bufferCopied);
+            if (Log.DEBUG) {
+                AudioUtils.showSomeBytes("out", bufferCopied);
             }
+        } else {
+            Log.e("size > remaining");
+            codec.releaseOutputBuffer(index, false);
         }
     }
 
@@ -253,66 +242,63 @@ public class EncodedAudioRecorder extends AbstractAudioRecorder {
      * data before any valid output buffer in output buffers marked with the codec-config flag.
      * Buffers containing codec-specific-data have no meaningful timestamps.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @RequiresPermission(RECORD_AUDIO)
     private int recorderEncoderLoop(MediaCodec codec, AudioRecord speechRecord) {
         int status = -1;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            codec.start();
-            // Getting some buffers (e.g. 4 of each) to communicate with the codec
-            ByteBuffer[] codecInputBuffers = codec.getInputBuffers();
-            ByteBuffer[] codecOutputBuffers = codec.getOutputBuffers();
-            Log.i("input buffers " + codecInputBuffers.length + "; output buffers: " + codecOutputBuffers.length);
-            boolean doneSubmittingInput = false;
-            int numDequeueOutputBufferTimeout = 0;
-            int index;
-            while (true) {
-                if (!doneSubmittingInput) {
-                    index = codec.dequeueInputBuffer(DEQUEUE_INPUT_BUFFER_TIMEOUT);
-                    if (index >= 0) {
-                        int size = queueInputBuffer(codec, codecInputBuffers, index, speechRecord);
-                        if (size == -1) {
-                            codec.queueInputBuffer(index, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
-                            Log.i("enc: in: EOS");
-                            doneSubmittingInput = true;
-                        } else {
-                            Log.i("enc: in: " + size);
-                            mNumBytesSubmitted += size;
-                        }
+        codec.start();
+        // Getting some buffers (e.g. 4 of each) to communicate with the codec
+        ByteBuffer[] codecInputBuffers = codec.getInputBuffers();
+        ByteBuffer[] codecOutputBuffers = codec.getOutputBuffers();
+        Log.i("input buffers " + codecInputBuffers.length + "; output buffers: " + codecOutputBuffers.length);
+        boolean doneSubmittingInput = false;
+        int numDequeueOutputBufferTimeout = 0;
+        int index;
+        while (true) {
+            if (!doneSubmittingInput) {
+                index = codec.dequeueInputBuffer(DEQUEUE_INPUT_BUFFER_TIMEOUT);
+                if (index >= 0) {
+                    int size = queueInputBuffer(codec, codecInputBuffers, index, speechRecord);
+                    if (size == -1) {
+                        codec.queueInputBuffer(index, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
+                        Log.i("enc: in: EOS");
+                        doneSubmittingInput = true;
                     } else {
-                        Log.i("enc: in: timeout, will try again");
+                        Log.i("enc: in: " + size);
+                        mNumBytesSubmitted += size;
                     }
-                }
-                MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
-                index = codec.dequeueOutputBuffer(info, DEQUEUE_OUTPUT_BUFFER_TIMEOUT);
-                Log.i("enc: out: flags/index: " + info.flags + "/" + index);
-                if (index == MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    numDequeueOutputBufferTimeout++;
-                    Log.i("enc: out: INFO_TRY_AGAIN_LATER: " + numDequeueOutputBufferTimeout);
-                    if (numDequeueOutputBufferTimeout > MAX_NUM_RETRIES_DEQUEUE_OUTPUT_BUFFER) {
-                        break;
-                    }
-                } else if (index == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                    MediaFormat format = codec.getOutputFormat();
-                    Log.i("enc: out: INFO_OUTPUT_FORMAT_CHANGED: " + format.toString());
-                } else if (index == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
-                    codecOutputBuffers = codec.getOutputBuffers();
-                    Log.i("enc: out: INFO_OUTPUT_BUFFERS_CHANGED");
                 } else {
-                    dequeueOutputBuffer(codec, codecOutputBuffers, index, info);
-                    mNumBytesDequeued += info.size;
-                    numDequeueOutputBufferTimeout = 0;
-                    if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
-                        Log.i("enc: out: EOS");
-                        status = 0;
-                        break;
-                    }
+                    Log.i("enc: in: timeout, will try again");
                 }
             }
-            codec.stop();
-            codec.release();
-            Log.i("stopped and released codec");
+            MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+            index = codec.dequeueOutputBuffer(info, DEQUEUE_OUTPUT_BUFFER_TIMEOUT);
+            Log.i("enc: out: flags/index: " + info.flags + "/" + index);
+            if (index == MediaCodec.INFO_TRY_AGAIN_LATER) {
+                numDequeueOutputBufferTimeout++;
+                Log.i("enc: out: INFO_TRY_AGAIN_LATER: " + numDequeueOutputBufferTimeout);
+                if (numDequeueOutputBufferTimeout > MAX_NUM_RETRIES_DEQUEUE_OUTPUT_BUFFER) {
+                    break;
+                }
+            } else if (index == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                MediaFormat format = codec.getOutputFormat();
+                Log.i("enc: out: INFO_OUTPUT_FORMAT_CHANGED: " + format.toString());
+            } else if (index == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
+                codecOutputBuffers = codec.getOutputBuffers();
+                Log.i("enc: out: INFO_OUTPUT_BUFFERS_CHANGED");
+            } else {
+                dequeueOutputBuffer(codec, codecOutputBuffers, index, info);
+                mNumBytesDequeued += info.size;
+                numDequeueOutputBufferTimeout = 0;
+                if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+                    Log.i("enc: out: EOS");
+                    status = 0;
+                    break;
+                }
+            }
         }
+        codec.stop();
+        codec.release();
+        Log.i("stopped and released codec");
         return status;
     }
 }

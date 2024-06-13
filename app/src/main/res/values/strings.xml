@@ -14,7 +14,8 @@
     <string name="labelIme">Whisper Input voice keyboard</string>
     <string name="labelRecognitionServiceHttp">Kõnele (grammar support)</string>
     <string name="labelRecognitionServiceWs">Kõnele (fast recognition)</string>
-    <string name="labelRecognitionServiceOffline">Whisper Input recognition service</string>
+    <string name="labelRecognitionServiceOffline">Whisper ggml-tiny.bin Input recognition service</string>
+    <string name="labelRecognitionServiceOfflineEn">Whisper ggml-tiny.en.bin Input recognition service</string>
 
     <!-- Activity labels -->
     <string name="labelActivityRecognizerIntent">@string/labelApp</string>
@@ -59,7 +60,8 @@
     <string name="summaryServices">List of installed recognition services with links to their settings panels</string>
     <string name="summaryServiceHttp">Service based on the Ruby PocketSphinx GStreamer server. The server URL can be changed. The default server supports Estonian and Grammatical Framework.</string>
     <string name="summaryServiceWs">Service based on the Kaldi GStreamer server. The server URL can be changed. The default server supports Estonian and fast/accurate recognition.</string>
-    <string name="summaryServiceOffline">Service based on Whisper AI for offline recognition.</string>
+    <string name="summaryServiceOffline">Service based on Whisper AI ggml-tiny.bin for offline recognition.</string>
+    <string name="summaryServiceOfflineEn">Service based on Whisper AI ggml-tiny.en.bin for offline recognition.</string>
     <string name="titleScreenDevel">Developer settings, demos, tools</string>
     <string name="titleAutoStart">Auto start</string>
     <string name="summaryAutoStart">Start recording automatically</string>

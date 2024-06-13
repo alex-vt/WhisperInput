@@ -1,6 +1,5 @@
 package ee.ioc.phon.android.speechutils.utils;
 
-import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -109,96 +107,79 @@ public class AudioUtils {
     }
 
     // TODO: use MediaFormat.MIMETYPE_AUDIO_FLAC) on API>=21
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static List<String> getAvailableEncoders(String mime, int sampleRate) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            MediaFormat format = MediaFormatFactory.createMediaFormat(mime, sampleRate);
-            MediaCodecList mcl = new MediaCodecList(MediaCodecList.REGULAR_CODECS);
-            String encoderAsStr = mcl.findEncoderForFormat(format);
-            List<String> encoders = new ArrayList<>();
-            for (MediaCodecInfo info : mcl.getCodecInfos()) {
-                if (info.isEncoder()) {
-                    String name = info.getName();
-                    String infoAsStr = name + ": " + TextUtils.join(", ", info.getSupportedTypes());
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        infoAsStr += String.format(": %s/%s/%s/%s", info.isHardwareAccelerated(), info.isSoftwareOnly(), info.isAlias(), info.isVendor());
-                    }
-                    if (name.equals(encoderAsStr)) {
-                        infoAsStr = '#' + infoAsStr;
-                    }
-                    encoders.add(infoAsStr);
+        MediaFormat format = MediaFormatFactory.createMediaFormat(mime, sampleRate);
+        MediaCodecList mcl = new MediaCodecList(MediaCodecList.REGULAR_CODECS);
+        String encoderAsStr = mcl.findEncoderForFormat(format);
+        List<String> encoders = new ArrayList<>();
+        for (MediaCodecInfo info : mcl.getCodecInfos()) {
+            if (info.isEncoder()) {
+                String name = info.getName();
+                String infoAsStr = name + ": " + TextUtils.join(", ", info.getSupportedTypes());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    infoAsStr += String.format(": %s/%s/%s/%s", info.isHardwareAccelerated(), info.isSoftwareOnly(), info.isAlias(), info.isVendor());
                 }
+                if (name.equals(encoderAsStr)) {
+                    infoAsStr = '#' + infoAsStr;
+                }
+                encoders.add(infoAsStr);
             }
-            return encoders;
         }
-        return Collections.emptyList();
+        return encoders;
     }
 
     /**
      * Maps the given mime type to a list of names of suitable codecs.
      * Only OMX-codecs are considered.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static List<String> getEncoderNamesForType(String mime) {
         LinkedList<String> names = new LinkedList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            int n = MediaCodecList.getCodecCount();
-            for (int i = 0; i < n; ++i) {
-                MediaCodecInfo info = MediaCodecList.getCodecInfoAt(i);
-                if (!info.isEncoder()) {
-                    continue;
-                }
-                // TODO: do we still need this?
-                if (!info.getName().startsWith("OMX.")) {
-                    // Unfortunately for legacy reasons, "AACEncoder", a
-                    // non OMX component had to be in this list for the video
-                    // editor code to work... but it cannot actually be instantiated
-                    // using MediaCodec.
-                    Log.i("skipping '" + info.getName() + "'.");
-                    continue;
-                }
-                String[] supportedTypes = info.getSupportedTypes();
-                for (String type : supportedTypes) {
-                    if (type.equalsIgnoreCase(mime)) {
-                        names.push(info.getName());
-                        break;
-                    }
+        int n = MediaCodecList.getCodecCount();
+        for (int i = 0; i < n; ++i) {
+            MediaCodecInfo info = MediaCodecList.getCodecInfoAt(i);
+            if (!info.isEncoder()) {
+                continue;
+            }
+            // TODO: do we still need this?
+            if (!info.getName().startsWith("OMX.")) {
+                // Unfortunately for legacy reasons, "AACEncoder", a
+                // non OMX component had to be in this list for the video
+                // editor code to work... but it cannot actually be instantiated
+                // using MediaCodec.
+                Log.i("skipping '" + info.getName() + "'.");
+                continue;
+            }
+            String[] supportedTypes = info.getSupportedTypes();
+            for (String type : supportedTypes) {
+                if (type.equalsIgnoreCase(mime)) {
+                    names.push(info.getName());
+                    break;
                 }
             }
         }
-        // Return an empty list if API is too old
-        // TODO: maybe return null or throw exception
         return names;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static MediaCodec createCodec(String componentName, MediaFormat format) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            try {
-                MediaCodec codec = MediaCodec.createByCodecName(componentName);
-                codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-                return codec;
-            } catch (IllegalStateException e) {
-                Log.e("codec '" + componentName + "' failed configuration.");
-            } catch (IOException e) {
-                Log.e("codec '" + componentName + "' failed configuration.");
-            }
+        try {
+            MediaCodec codec = MediaCodec.createByCodecName(componentName);
+            codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+            return codec;
+        } catch (IllegalStateException | IOException e) {
+            Log.e("codec '" + componentName + "' failed configuration.");
         }
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void showMetrics(MediaFormat format, int numBytesSubmitted, int numBytesDequeued) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            Log.i("queued a total of " + numBytesSubmitted + " bytes, " + "dequeued " + numBytesDequeued + " bytes.");
-            int sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
-            int channelCount = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
-            int inBitrate = sampleRate * channelCount * 16;  // bit/sec
-            int outBitrate = format.getInteger(MediaFormat.KEY_BIT_RATE);
-            float desiredRatio = (float) outBitrate / (float) inBitrate;
-            float actualRatio = (float) numBytesDequeued / (float) numBytesSubmitted;
-            Log.i("desiredRatio = " + desiredRatio + ", actualRatio = " + actualRatio);
-        }
+        Log.i("queued a total of " + numBytesSubmitted + " bytes, " + "dequeued " + numBytesDequeued + " bytes.");
+        int sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+        int channelCount = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+        int inBitrate = sampleRate * channelCount * 16;  // bit/sec
+        int outBitrate = format.getInteger(MediaFormat.KEY_BIT_RATE);
+        float desiredRatio = (float) outBitrate / (float) inBitrate;
+        float actualRatio = (float) numBytesDequeued / (float) numBytesSubmitted;
+        Log.i("desiredRatio = " + desiredRatio + ", actualRatio = " + actualRatio);
     }
 
     public static byte[] concatenateBuffers(List<byte[]> buffers) {

@@ -1,19 +1,16 @@
 package ee.ioc.phon.android.speechutils;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.AutomaticGainControl;
 import android.media.audiofx.NoiseSuppressor;
-import android.os.Build;
 
-import androidx.annotation.RequiresApi;
 import androidx.annotation.RequiresPermission;
 
-import static android.Manifest.permission.RECORD_AUDIO;
-
-@RequiresApi(api = Build.VERSION_CODES.M)
 public class SpeechAudioRecord {
 
     @RequiresPermission(RECORD_AUDIO)

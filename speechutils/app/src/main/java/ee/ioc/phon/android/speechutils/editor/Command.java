@@ -347,7 +347,7 @@ public class Command {
      * TODO: return an iterator over all possible matches
      */
     public String makeUtt() {
-        RgxGen rgxGen = new RgxGen(mUtt.pattern());
+        RgxGen rgxGen = RgxGen.parse(mUtt.pattern());
         StringIterator uniqueStrings = rgxGen.iterateUnique();
         if (uniqueStrings.hasNext()) {
             return uniqueStrings.next();
